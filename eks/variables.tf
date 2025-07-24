@@ -1,51 +1,60 @@
-variable "aws-region" {}
-variable "env" {}
-variable "cluster-name" {}
-variable "vpc-cidr-block" {}
-variable "vpc-name" {}
-variable "igw-name" {}
-variable "pub-subnet-count" {}
-variable "pub-cidr-block" {
-  type = list(string)
-}
-variable "pub-availability-zone" {
-  type = list(string)
-}
-variable "pub-sub-name" {}
-variable "pri-subnet-count" {}
-variable "pri-cidr-block" {
-  type = list(string)
-}
-variable "pri-availability-zone" {
-  type = list(string)
-}
-variable "pri-sub-name" {}
-variable "public-rt-name" {}
-variable "private-rt-name" {}
-variable "eip-name" {}
-variable "ngw-name" {}
-variable "eks-sg" {}
-
-
-# EKS
-variable "is-eks-cluster-enabled" {}
-variable "cluster-version" {}
-variable "endpoint-private-access" {}
-variable "endpoint-public-access" {}
-variable "ondemand_instance_types" {
-  default = ["t3a.medium"]
+variable "aws_region" {
+  description = "AWS region to deploy EKS cluster"
+  type        = string
 }
 
-variable "spot_instance_types" {}
-variable "desired_capacity_on_demand" {}
-variable "min_capacity_on_demand" {}
-variable "max_capacity_on_demand" {}
-variable "desired_capacity_spot" {}
-variable "min_capacity_spot" {}
-variable "max_capacity_spot" {}
-variable "addons" {
-  type = list(object({
-    name    = string
-    version = string
-  }))
+variable "env" {
+  description = "Environment name (e.g. dev, staging, prod)"
+  type        = string
+}
+
+variable "cluster_name" {
+  description = "EKS Cluster Name"
+  type        = string
+}
+
+variable "vpc_cidr_block" {
+  description = "CIDR block for the VPC"
+  type        = string
+}
+
+variable "public_subnet_cidrs" {
+  description = "List of public subnet CIDRs"
+  type        = list(string)
+}
+
+variable "private_subnet_cidrs" {
+  description = "List of private subnet CIDRs"
+  type        = list(string)
+}
+
+variable "availability_zones" {
+  description = "List of availability zones"
+  type        = list(string)
+}
+
+variable "eks_version" {
+  description = "EKS Cluster Version"
+  type        = string
+}
+
+variable "desired_capacity" {
+  description = "Desired number of worker nodes"
+  type        = number
+}
+
+variable "min_size" {
+  description = "Minimum number of worker nodes"
+  type        = number
+}
+
+variable "max_size" {
+  description = "Maximum number of worker nodes"
+  type        = number
+}
+
+variable "instance_types" {
+  description = "EC2 instance types for worker nodes"
+  type        = list(string)
+  default     = ["t3.medium"]
 }

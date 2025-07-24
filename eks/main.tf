@@ -1,44 +1,49 @@
-locals {
-  org = "medium"
-  env = var.env
+provider "aws" {
+  region = var.aws_region
+}
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "5.1.1"
+
+  name                 = "${var.env}-vpc"
+  cidr                 = var.vpc_cidr_block
+  azs                  = var.availability_zones
+  public_subnets       = var.public_subnet_cidrs
+  private_subnets      = var.private_subnet_cidrs
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  tags = {
+    Environment = var.env
+  }
 }
 
 module "eks" {
-  source = "../module"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "20.8.5" # latest compatible version
 
-  env                   = var.env
-  cluster-name          = "${local.env}-${local.org}-${var.cluster-name}"
-  cidr-block            = var.vpc-cidr-block
-  vpc-name              = "${local.env}-${local.org}-${var.vpc-name}"
-  igw-name              = "${local.env}-${local.org}-${var.igw-name}"
-  pub-subnet-count      = var.pub-subnet-count
-  pub-cidr-block        = var.pub-cidr-block
-  pub-availability-zone = var.pub-availability-zone
-  pub-sub-name          = "${local.env}-${local.org}-${var.pub-sub-name}"
-  pri-subnet-count      = var.pri-subnet-count
-  pri-cidr-block        = var.pri-cidr-block
-  pri-availability-zone = var.pri-availability-zone
-  pri-sub-name          = "${local.env}-${local.org}-${var.pri-sub-name}"
-  public-rt-name        = "${local.env}-${local.org}-${var.public-rt-name}"
-  private-rt-name       = "${local.env}-${local.org}-${var.private-rt-name}"
-  eip-name              = "${local.env}-${local.org}-${var.eip-name}"
-  ngw-name              = "${local.env}-${local.org}-${var.ngw-name}"
-  eks-sg                = var.eks-sg
+  cluster_name    = var.cluster_name
+  cluster_version = var.eks_version
+  cluster_endpoint_private_access = true
+  cluster_endpoint_public_access  = true
+  subnet_ids     = module.vpc.private_subnets
+  vpc_id         = module.vpc.vpc_id
 
-  is_eks_role_enabled           = true
-  is_eks_nodegroup_role_enabled = true
-  ondemand_instance_types       = var.ondemand_instance_types
-  spot_instance_types           = var.spot_instance_types
-  desired_capacity_on_demand    = var.desired_capacity_on_demand
-  min_capacity_on_demand        = var.min_capacity_on_demand
-  max_capacity_on_demand        = var.max_capacity_on_demand
-  desired_capacity_spot         = var.desired_capacity_spot
-  min_capacity_spot             = var.min_capacity_spot
-  max_capacity_spot             = var.max_capacity_spot
-  is-eks-cluster-enabled        = var.is-eks-cluster-enabled
-  cluster-version               = var.cluster-version
-  endpoint-private-access       = var.endpoint-private-access
-  endpoint-public-access        = var.endpoint-public-access
+  eks_managed_node_groups = {
+    default = {
+      desired_size = var.desired_capacity
+      min_size     = var.min_size
+      max_size     = var.max_size
 
-  addons = var.addons
+      instance_types = var.instance_types
+      capacity_type  = "ON_DEMAND"
+    }
+  }
+
+  tags = {
+    Environment = var.env
+  }
 }
