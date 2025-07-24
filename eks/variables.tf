@@ -1,34 +1,59 @@
-variable "aws_region" {
-  default = "us-east-1"
+variable "env" {}
+variable "aws-region" {}
+
+variable "vpc-cidr-block" {}
+variable "vpc-name" {}
+variable "igw-name" {}
+
+variable "pub-subnet-count" {}
+variable "pub-cidr-block" {
+  type = list(string)
+}
+variable "pub-availability-zone" {
+  type = list(string)
+}
+variable "pub-sub-name" {}
+
+variable "pri-subnet-count" {}
+variable "pri-cidr-block" {
+  type = list(string)
+}
+variable "pri-availability-zone" {
+  type = list(string)
+}
+variable "pri-sub-name" {}
+
+variable "public-rt-name" {}
+variable "private-rt-name" {}
+variable "eip-name" {}
+variable "ngw-name" {}
+variable "eks-sg" {}
+
+# EKS Cluster
+variable "is-eks-cluster-enabled" {}
+variable "cluster-version" {}
+variable "cluster-name" {}
+variable "endpoint-private-access" {}
+variable "endpoint-public-access" {}
+
+variable "ondemand_instance_types" {
+  type = list(string)
+}
+variable "spot_instance_types" {
+  type = list(string)
 }
 
-variable "enable_cluster_encryption" {
-  description = "Enable encryption for EKS secrets using KMS"
-  type        = bool
-  default     = false
-}
+variable "desired_capacity_on_demand" {}
+variable "min_capacity_on_demand" {}
+variable "max_capacity_on_demand" {}
 
+variable "desired_capacity_spot" {}
+variable "min_capacity_spot" {}
+variable "max_capacity_spot" {}
 
-variable "env" {
-  default = "dev"
-}
-
-variable "vpc_cidr" {
-  default = "10.0.0.0/16"
-}
-
-variable "azs" {
-  default = ["us-east-1a", "us-east-1b"]
-}
-
-variable "public_subnets" {
-  default = ["10.0.1.0/24", "10.0.2.0/24"]
-}
-
-variable "private_subnets" {
-  default = ["10.0.101.0/24", "10.0.102.0/24"]
-}
-
-variable "cluster_version" {
-  default = "1.29"
+variable "addons" {
+  type = list(object({
+    name    = string
+    version = string
+  }))
 }
