@@ -2,6 +2,13 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
+variable "enable_cluster_encryption" {
+  description = "Enable encryption for EKS secrets using KMS"
+  type        = bool
+  default     = false
+}
+
+
 variable "env" {
   default = "dev"
 }
