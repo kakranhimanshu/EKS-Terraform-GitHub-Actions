@@ -17,6 +17,7 @@ eip-name              = "elasticip-ngw"
 ngw-name              = "ngw"
 eks-sg                = "eks-sg"
 
+# EKS
 is-eks-cluster-enabled     = true
 cluster-version            = "1.32"
 cluster-name               = "eks-cluster"
@@ -30,7 +31,6 @@ max_capacity_on_demand     = "5"
 desired_capacity_spot      = "1"
 min_capacity_spot          = "1"
 max_capacity_spot          = "10"
-
 addons = [
   {
     name    = "vpc-cni"
